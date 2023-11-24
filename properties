@@ -1,0 +1,54 @@
+[
+  {
+    "image": "https://www.realtytrac.com/_ipx/w_1920,q_75/https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAax7_ccY6PCr9F5RxIEjVpoGvp6U6l5a4R0EAeIwjdJcuSznINBVBNLjxaF6e5adLx-vuPemcTEkJEcauoCP_o5qWN9Vkr8OFA3SCi9m9EdIFgV4u1x0m8PJGwR9mUTdwBlxgMq0yeyCoJbatT9BvWKkMUIM?q=75&url=https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAax7_ccY6PCr9F5RxIEjVpoGvp6U6l5a4R0EAeIwjdJcuSznINBVBNLjxaF6e5adLx-vuPemcTEkJEcauoCP_o5qWN9Vkr8OFA3SCi9m9EdIFgV4u1x0m8PJGwR9mUTdwBlxgMq0yeyCoJbatT9BvWKkMUIM&w=1920",
+    "title": "Spacious Family Home",
+    "location": "Greenwood, Seattle",
+    "agent": {
+      "name": "Emily Johnson",
+      "image": "agent1.jpg"
+    },
+    "verificationStatus": "Verified",
+    "priceRange": "$800,000 - $900,000",
+    "description": "This beautiful family home is located in the heart of Greenwood, Seattle. It features four bedrooms, three bathrooms, a modern kitchen, and a spacious backyard. The neighborhood is known for its excellent schools and vibrant community. Enjoy the comfort of suburban living with easy access to city amenities.",
+    "detailsButton": "/property-details/1"
+  },
+  {
+    "image": "https://www.realtytrac.com/_ipx/w_1920,q_75/https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAU4_IbbCpugTASULz76OxeaYNoa6xNFrn-ojAJjaxBJlwypCU6z6Upd9dPB57Sh9oWgotd1vsy8u4kzM8v3iWorAFx58-Jf_SIDIYWl75H_nopu08MSun_320WDO9Ty3lR2iG8PBZDeXjrAXZkpfmuyqJSv0?q=75&url=https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAU4_IbbCpugTASULz76OxeaYNoa6xNFrn-ojAJjaxBJlwypCU6z6Upd9dPB57Sh9oWgotd1vsy8u4kzM8v3iWorAFx58-Jf_SIDIYWl75H_nopu08MSun_320WDO9Ty3lR2iG8PBZDeXjrAXZkpfmuyqJSv0&w=1920",
+    "title": "Downtown Penthouse",
+    "location": "Financial District, New York",
+    "agent": {
+      "name": "Michael Rodriguez",
+      "image": "agent2.jpg"
+    },
+    "verificationStatus": "Verified",
+    "priceRange": "$2,000,000 - $2,500,000",
+    "description": "Experience luxury living in this stunning downtown penthouse. Boasting breathtaking views of the city skyline, this penthouse features high-end finishes, a private terrace, and exclusive access to top-notch amenities. Ideal for those seeking a sophisticated urban lifestyle.",
+    "detailsButton": "/property-details/2"
+  },
+  {
+    "image": "https://www.realtytrac.com/_ipx/w_1920,q_75/https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAZFwMPj7GnvJbypVGMY7P7RApXp5QoxSZJB_FT6g3GgIQ0qESj92ZYC1ON_U7CzU0zoqnDWDWCf3VCdLsuWzFddIWDhEeC7KVd2U3k4Mw5X_Odb5ttpNMdf6UbYG_akKJrOwiQIaYP0P04Qm6OnPIUlnTsxn?q=75&url=https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAZFwMPj7GnvJbypVGMY7P7RApXp5QoxSZJB_FT6g3GgIQ0qESj92ZYC1ON_U7CzU0zoqnDWDWCf3VCdLsuWzFddIWDhEeC7KVd2U3k4Mw5X_Odb5ttpNMdf6UbYG_akKJrOwiQIaYP0P04Qm6OnPIUlnTsxn&w=1920",
+    "title": "Cozy Countryside Cottage",
+    "location": "Cotswolds, England",
+    "agent": {
+      "name": "Olivia Anderson",
+      "image": "agent3.jpg"
+    },
+    "verificationStatus": "Pending",
+    "priceRange": "$500,000 - $600,000",
+    "description": "Escape to the picturesque countryside in this charming cottage. Surrounded by rolling hills and lush greenery, this property offers tranquility and a rustic charm. The cottage features a fireplace, a garden, and is perfect for those seeking a peaceful retreat.",
+    "detailsButton": "/property-details/3"
+  },
+  {
+    "image": "https://www.realtytrac.com/_ipx/w_1920,q_75/https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAXtbFvbtHiLxZVeGQcVmkQuN_HXEAznvxKEfySzHyNJXSUsWWzrJWBGUMK5WRx89_hIsGxvLi4FvoKGHWkOV5YDv9fa2j_lL-5ZTQHEOhy1RCLrc8TYBj_Nmh2PrizcKkZV7bhkdq3Rkd30kjRPGjsJ5khER?q=75&url=https%3A%2F%2Fapi1.realtytrac.com%2Fapi%2Fv1%2Fproperties%2Fphoto%3Fu%3DAXtbFvbtHiLxZVeGQcVmkQuN_HXEAznvxKEfySzHyNJXSUsWWzrJWBGUMK5WRx89_hIsGxvLi4FvoKGHWkOV5YDv9fa2j_lL-5ZTQHEOhy1RCLrc8TYBj_Nmh2PrizcKkZV7bhkdq3Rkd30kjRPGjsJ5khER&w=1920",
+    "title": "Modern Urban Loft",
+    "location": "Gastown, Vancouver",
+    "agent": {
+      "name": "David Chang",
+      "image": "agent4.jpg"
+    },
+    "verificationStatus": "Verified",
+    "priceRange": "$1,200,000 - $1,400,000",
+    "description": "Live in style in this contemporary urban loft located in the trendy neighborhood of Gastown. With exposed brick walls, high ceilings, and industrial-chic design, this loft is perfect for those who appreciate modern aesthetics. Enjoy the vibrant culture and nightlife of the area.",
+    "detailsButton": "/property-details/4"
+  }
+]

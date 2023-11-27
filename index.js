@@ -71,6 +71,7 @@ async function run() {
         const database = client.db("RealStateDB");
         const PropertiesCollection = database.collection("Properties");
         const ReviewsCollection = database.collection("Reviews");
+        const WishListCollection = database.collection("WishList");
 
         app.post('/jwt', async (req, res) => {
             const user = req.body;
@@ -118,6 +119,33 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get("/reviews/:id", logger, verifyToken, async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: new ObjectId(id) };
+            const result = await ReviewsCollection.findOne(query);
+            res.send(result);
+        })
+
+        // WishList
+        app.post('/wishList', logger, verifyToken, async (req, res) => {
+            const newReview = req.body;
+            console.log(newReview);
+            const result = await WishListCollection.insertOne(newReview);
+            res.send(result);
+        })
+        app.get("/wishList", logger, verifyToken, async (req, res) => {
+            const ownerEmail = req.query.email;
+            // console.log(jobCat);
+            const query = { ownerEmail: ownerEmail };
+            const options = {
+                sort: { job_title: 1 },
+            };
+            const cursor = WishListCollection.find(query, options);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
 
 
         // Send a ping to confirm a successful connection

@@ -70,6 +70,7 @@ async function run() {
 
         const database = client.db("RealStateDB");
         const PropertiesCollection = database.collection("Properties");
+        const ReviewsCollection = database.collection("Reviews");
 
         app.post('/jwt', async (req, res) => {
             const user = req.body;
@@ -94,7 +95,27 @@ async function run() {
         app.get("/properties", async (req, res) => {
             const cursor = PropertiesCollection.find();
             const result = await cursor.toArray();
-            console.log(result);
+            // console.log(result);
+            res.send(result);
+        })
+        app.get("/properties/:id", logger, verifyToken, async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: new ObjectId(id) };
+            const result = await PropertiesCollection.findOne(query);
+            res.send(result);
+        })
+
+        // Reviews
+        app.post('/reviews', logger, verifyToken, async (req, res) => {
+            const newReview = req.body;
+            console.log(newReview);
+            const result = await ReviewsCollection.insertOne(newReview);
+            res.send(result);
+        })
+        app.get('/reviews', async (req, res) => {
+            const cursor = ReviewsCollection.find();
+            const result = await cursor.toArray();
             res.send(result);
         })
 

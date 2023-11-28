@@ -72,6 +72,7 @@ async function run() {
         const PropertiesCollection = database.collection("Properties");
         const ReviewsCollection = database.collection("Reviews");
         const WishListCollection = database.collection("WishList");
+        const UsersCollection = database.collection("Users");
 
         app.post('/jwt', async (req, res) => {
             const user = req.body;
@@ -90,6 +91,14 @@ async function run() {
             const user = req.body;
             console.log('Logging out: ', user);
             res.clearCookie('token', { maxAge: 0 }).send({ success: true })
+        })
+
+        // Users
+        app.post('/users', async (req, res) => {
+            const newUser = req.body;
+            console.log(newUser);
+            const result = await UsersCollection.insertOne(newUser);
+            res.send(result);
         })
 
         // Properties

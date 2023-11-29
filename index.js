@@ -117,6 +117,12 @@ async function run() {
             const result = await UsersCollection.insertOne(newUser);
             res.send(result);
         })
+        app.get("/users", async (req, res) => {
+            const cursor = UsersCollection.find();
+            const result = await cursor.toArray();
+            // console.log(result);
+            res.send(result);
+        })
 
         // Properties
         app.get("/properties", async (req, res) => {
@@ -163,10 +169,11 @@ async function run() {
             const result = await WishListCollection.insertOne(newReview);
             res.send(result);
         })
-        app.get("/wishList", logger, verifyToken, async (req, res) => {
+        app.get("/wishList", logger, async (req, res) => {
             const ownerEmail = req.query.email;
             // console.log(jobCat);
             const query = { ownerEmail: ownerEmail };
+            console.log("afa",query);
             const options = {
                 sort: { job_title: 1 },
             };

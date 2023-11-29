@@ -64,6 +64,16 @@ const verifyToken = async (req, res, next) => {
 
 }
 
+const verifyAdmin = async (req, res, next)=>{
+    console.log("In verifyAdmin");
+    const email = req.decoded.email;
+    const query = {email:email}
+    const user = await UsersCollection.findOne(query)
+    if(user?.role !== 'admin'){
+
+    }
+}
+
 async function run() {
     try {
         // await client.connect();
@@ -97,6 +107,13 @@ async function run() {
         app.post('/users', async (req, res) => {
             const newUser = req.body;
             console.log(newUser);
+
+            const query = {email: newUser.email};
+            const existingUser = await UsersCollection.findOne(query);
+
+            if(existingUser){
+                return res.send({message: "User already exists", insertedId: null})
+            }
             const result = await UsersCollection.insertOne(newUser);
             res.send(result);
         })
@@ -123,18 +140,21 @@ async function run() {
             const result = await ReviewsCollection.insertOne(newReview);
             res.send(result);
         })
-        app.get('/reviews', async (req, res) => {
-            const cursor = ReviewsCollection.find();
-            const result = await cursor.toArray();
-            res.send(result);
-        })
-        app.get("/reviews/:id", logger, verifyToken, async (req, res) => {
-            const id = req.params.id;
-            console.log(id);
-            const query = { _id: new ObjectId(id) };
-            const result = await ReviewsCollection.findOne(query);
-            res.send(result);
-        })
+        app.get("/reviews", logger, verifyToken, async (req, res) => {
+            try {
+                const propId = req.query.reviewId;
+                const query = { propId: propId };
+                const options = {
+                    sort: { rating: 1 },
+                };
+                const cursor = ReviewsCollection.find(query, options);
+                const results = await cursor.toArray();
+                res.send({ results });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                res.status(500).send({ error: "Internal Server Error" });
+            }
+        });
 
         // WishList
         app.post('/wishList', logger, verifyToken, async (req, res) => {

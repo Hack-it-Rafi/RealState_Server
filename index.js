@@ -83,6 +83,7 @@ async function run() {
         const ReviewsCollection = database.collection("Reviews");
         const WishListCollection = database.collection("WishList");
         const UsersCollection = database.collection("Users");
+        const OffersCollection = database.collection("Offers");
 
         app.post('/jwt', async (req, res) => {
             const user = req.body;
@@ -161,6 +162,21 @@ async function run() {
                 res.status(500).send({ error: "Internal Server Error" });
             }
         });
+        app.get("/myReviews", logger, async (req, res) => {
+            try {
+                const email = req.query.email;
+                const query = { reviewer_email: email };
+                const options = {
+                    sort: { rating: 1 },
+                };
+                const cursor = ReviewsCollection.find(query, options);
+                const results = await cursor.toArray();
+                res.send({ results });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                res.status(500).send({ error: "Internal Server Error" });
+            }
+        });
 
         // WishList
         app.post('/wishList', logger, verifyToken, async (req, res) => {
@@ -178,6 +194,33 @@ async function run() {
                 sort: { job_title: 1 },
             };
             const cursor = WishListCollection.find(query, options);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+        app.delete('/wishList/:id', logger, async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: new ObjectId(id) };
+            const result = await WishListCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // Offer Properties
+        app.post('/offeredProp', logger, async (req, res) => {
+            const newOffer = req.body;
+            console.log(newOffer);
+            const result = await OffersCollection.insertOne(newOffer);
+            res.send(result);
+        })
+        app.get("/offeredProp", logger, async (req, res) => {
+            const ownerEmail = req.query.email;
+            // console.log(jobCat);
+            const query = { ownerEmail: ownerEmail };
+            // console.log("afa",query);
+            const options = {
+                sort: { job_title: 1 },
+            };
+            const cursor = OffersCollection.find(query, options);
             const result = await cursor.toArray();
             res.send(result);
         })

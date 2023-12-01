@@ -58,7 +58,7 @@ const verifyToken = async (req, res, next) => {
             return res.status(401).send({ message: 'not authorized' })
         }
         console.log("Value in the token: ", decoded);
-        req.user = decoded;
+        req.decoded = decoded;
         next();
     })
 
@@ -69,9 +69,12 @@ const verifyAdmin = async (req, res, next)=>{
     const email = req.decoded.email;
     const query = {email:email}
     const user = await UsersCollection.findOne(query)
-    if(user?.role !== 'admin'){
+    const isAdmin = user?.role === 'admin';
 
+    if(!isAdmin){
+        return res.status(403).send({message : "forbidden access"})
     }
+    next()
 }
 
 async function run() {
@@ -118,12 +121,29 @@ async function run() {
             const result = await UsersCollection.insertOne(newUser);
             res.send(result);
         })
-        app.get("/users", async (req, res) => {
-            const cursor = UsersCollection.find();
-            const result = await cursor.toArray();
-            // console.log(result);
-            res.send(result);
+        app.get("/users/admin/:email",verifyToken, async (req, res) => {
+            const email =  req.params.email
+            console.log("checking role",req.decoded);
+            if(email !== req.decoded.email){
+                res.status(403).send({message:"forbidden access"})
+            }
+            const query = {email:email}
+            const user = await UsersCollection.findOne(query)
+            console.log("user is",user);
+            let role = "user"
+            if(user){
+                role = user?.role
+                res.send({role})
+            }
+           
+            
+            // const cursor = UsersCollection.find();
+            // const result = await cursor.toArray();
+            // // console.log(result);
+            // res.send(result);
         })
+
+        
 
         // Properties
         app.get("/properties", async (req, res) => {
@@ -137,6 +157,12 @@ async function run() {
             console.log(id);
             const query = { _id: new ObjectId(id) };
             const result = await PropertiesCollection.findOne(query);
+            res.send(result);
+        })
+        app.post('/properties',async(req,res) => {
+            const propertyData = req.body;
+            console.log(propertyData);
+            const result = await PropertiesCollection.insertOne(propertyData);
             res.send(result);
         })
 

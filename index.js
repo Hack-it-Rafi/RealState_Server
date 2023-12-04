@@ -144,12 +144,46 @@ async function run() {
             // // console.log(result);
             // res.send(result);
         })
-        app.get("/users", async(req, res)=>{
-            const cursor = UsersCollection.find();
+        app.get("/users",async(req, res)=>{
+            const cursor = await UsersCollection.find();
             const result = await cursor.toArray();
             // console.log(result);
             res.send(result);
 
+        })
+
+        app.patch('/users/admin/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    role: "admin"
+                },
+            }
+            const result = await UsersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+        app.patch('/users/agent/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    role: "agent"
+                },
+            }
+            const result = await UsersCollection.updateOne(filter, updateDoc)
+            res.send(result)
+        })
+        app.patch('/users/fraudAgent/:id', async (req, res) => {
+            const id = req.params.id
+            const filter = { _id: new ObjectId(id) }
+            const updateDoc = {
+                $set: {
+                    role: "fraudAgent"
+                },
+            }
+            const result = await UsersCollection.updateOne(filter, updateDoc)
+            res.send(result)
         })
 
 

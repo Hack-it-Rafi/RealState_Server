@@ -144,7 +144,7 @@ async function run() {
             // // console.log(result);
             // res.send(result);
         })
-        app.get("/users",async(req, res)=>{
+        app.get("/users", async (req, res) => {
             const cursor = await UsersCollection.find();
             const result = await cursor.toArray();
             // console.log(result);
@@ -243,7 +243,7 @@ async function run() {
 
         app.delete('/deleteProperty/:id', async (req, res) => {
             const id = req.params.id
-            const query = { _id : new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await PropertiesCollection.deleteOne(query);
             if (result.deletedCount === 1) {
                 console.log("Successfully deleted one document.");
@@ -294,9 +294,13 @@ async function run() {
         // WishList
         app.post('/wishList', logger, verifyToken, async (req, res) => {
             const newReview = req.body;
-            console.log(newReview);
-            const result = await WishListCollection.insertOne(newReview);
-            res.send(result);
+            const alreadyExist = await WishListCollection.findOne(newReview)
+            if (!alreadyExist) {
+                // console.log(newReview);
+                const result = await WishListCollection.insertOne(newReview);
+                res.send(result);
+            }
+
         })
         app.get("/wishList", logger, async (req, res) => {
             const buyerMail = req.query.email;
@@ -352,8 +356,8 @@ async function run() {
         app.get("/offeredProp/:id", logger, async (req, res) => {
             const id = req.params.id;
             // console.log(jobCat);
-            const query = { _id:new ObjectId(id)};
-            console.log("afa",query);
+            const query = { _id: new ObjectId(id) };
+            console.log("afa", query);
             const result = await OffersCollection.findOne(query);
             res.send(result);
         })
@@ -371,7 +375,7 @@ async function run() {
                         name: updatedData.agent.name,
                         image: updatedData.agent.image
                     },
-                    status:updatedData.status,
+                    status: updatedData.status,
                     location: updatedData.location,
                     buyerName: updatedData.buyerName,
                     buyerMail: updatedData.buyerMail,
@@ -386,16 +390,16 @@ async function run() {
 
         //PAYMENT INTENT 
 
-        app.post('/create-payment-intent',async(req,res)=>{
-            const {price} = req.body;
-            const  amount = parseInt(price*100);
+        app.post('/create-payment-intent', async (req, res) => {
+            const { price } = req.body;
+            const amount = parseInt(price * 100);
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: amount,
-                currency : 'usd',
+                currency: 'usd',
                 payment_method_types: ['card']
             })
             res.send({
-                clientSecret : paymentIntent.client_secret
+                clientSecret: paymentIntent.client_secret
             })
         })
 

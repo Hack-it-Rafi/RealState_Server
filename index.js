@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5000;
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 app.use(express.json());
 const corsOptions = {
@@ -64,18 +65,20 @@ const verifyToken = async (req, res, next) => {
 
 }
 
-const verifyAdmin = async (req, res, next)=>{
+const verifyAdmin = async (req, res, next) => {
     console.log("In verifyAdmin");
     const email = req.decoded.email;
-    const query = {email:email}
+    const query = { email: email }
     const user = await UsersCollection.findOne(query)
     const isAdmin = user?.role === 'admin';
 
-    if(!isAdmin){
-        return res.status(403).send({message : "forbidden access"})
+    if (!isAdmin) {
+        return res.status(403).send({ message: "forbidden access" })
     }
     next()
 }
+//ToDo: make a verifyAgent middleware to secure their personal data
+
 
 async function run() {
     try {
@@ -95,7 +98,7 @@ async function run() {
             res
                 .cookie('token', token, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV==='production',
+                    secure: process.env.NODE_ENV === 'production',
                     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
                 })
                 .send({ success: true })
@@ -112,38 +115,38 @@ async function run() {
             const newUser = req.body;
             console.log(newUser);
 
-            const query = {email: newUser.email};
+            const query = { email: newUser.email };
             const existingUser = await UsersCollection.findOne(query);
 
-            if(existingUser){
-                return res.send({message: "User already exists", insertedId: null})
+            if (existingUser) {
+                return res.send({ message: "User already exists", insertedId: null })
             }
             const result = await UsersCollection.insertOne(newUser);
             res.send(result);
         })
-        app.get("/users/admin/:email",verifyToken, async (req, res) => {
-            const email =  req.params.email
-            console.log("checking role",req.decoded);
-            if(email !== req.decoded.email){
-                res.status(403).send({message:"forbidden access"})
+        app.get("/users/admin/:email", verifyToken, async (req, res) => {
+            const email = req.params.email
+            console.log("checking role", req.decoded);
+            if (email !== req.decoded.email) {
+                res.status(403).send({ message: "forbidden access" })
             }
-            const query = {email:email}
+            const query = { email: email }
             const user = await UsersCollection.findOne(query)
-            console.log("user is",user);
+            console.log("user is", user);
             let role = "user"
-            if(user){
+            if (user) {
                 role = user?.role
-                res.send({role})
+                res.send({ role })
             }
-           
-            
+
+
             // const cursor = UsersCollection.find();
             // const result = await cursor.toArray();
             // // console.log(result);
             // res.send(result);
         })
 
-        
+
 
         // Properties
         app.get("/properties", async (req, res) => {
@@ -159,11 +162,55 @@ async function run() {
             const result = await PropertiesCollection.findOne(query);
             res.send(result);
         })
-        app.post('/properties',async(req,res) => {
+        app.get("/addedProperties", async (req, res) => { //using verifyToken causing problem here,why?
+            const email = req.query.email
+
+            const query = { addedFrom: email }
+            const result = await PropertiesCollection.find(query).toArray()
+            res.send(result)
+        })
+        app.put('/updateProperty/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const updatedData = req.body
+            const options = { upsert: true };
+            const newData = {
+                $set: {
+                    title: updatedData.title,
+                    image: updatedData.image,
+                    agent: {
+                        name: updatedData.agent.name,
+                        image: updatedData.agent.image
+                    },
+                    location: updatedData.location,
+                    description: updatedData.description,
+                    verificationStatus: updatedData.verificationStatus,
+                    addedFrom: updatedData.addedFrom,
+                    priceRange: updatedData.priceRange
+                }
+            }
+            const result = await PropertiesCollection.updateOne(query, newData, options)
+            res.send(result)
+
+        })
+
+        app.post('/properties', async (req, res) => {
             const propertyData = req.body;
             console.log(propertyData);
             const result = await PropertiesCollection.insertOne(propertyData);
             res.send(result);
+        })
+
+        app.delete('/deleteProperty/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id : new ObjectId(id)};
+            const result = await PropertiesCollection.deleteOne(query);
+            if (result.deletedCount === 1) {
+                console.log("Successfully deleted one document.");
+            } else {
+                console.log("No documents matched the query. Deleted 0 documents.");
+            }
+            res.send(result)
         })
 
         // Reviews
@@ -215,7 +262,7 @@ async function run() {
             const ownerEmail = req.query.email;
             // console.log(jobCat);
             const query = { ownerEmail: ownerEmail };
-            console.log("afa",query);
+            console.log("afa", query);
             const options = {
                 sort: { job_title: 1 },
             };
@@ -241,7 +288,7 @@ async function run() {
         app.get("/offeredProp", logger, async (req, res) => {
             const ownerEmail = req.query.email;
             // console.log(jobCat);
-            const query = { ownerEmail: ownerEmail };
+            const query = { buyerMail: ownerEmail };
             // console.log("afa",query);
             const options = {
                 sort: { job_title: 1 },
@@ -250,7 +297,55 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get("/offeredProp/:id", logger, async (req, res) => {
+            const id = req.params.id;
+            // console.log(jobCat);
+            const query = { _id:new ObjectId(id)};
+            console.log("afa",query);
+            const result = await OffersCollection.findOne(query);
+            res.send(result);
+        })
+        app.put('/offeredProp/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const updatedData = req.body
+            const options = { upsert: true };
+            const newData = {
+                $set: {
+                    title: updatedData.title,
+                    propId: updatedData.propId,
+                    image: updatedData.image,
+                    agent: {
+                        name: updatedData.agent.name,
+                        image: updatedData.agent.image
+                    },
+                    status:updatedData.status,
+                    location: updatedData.location,
+                    buyerName: updatedData.buyerName,
+                    buyerEmail: updatedData.buyerEmail,
+                    date: updatedData.date,
+                    amount: updatedData.amount
+                }
+            }
+            const result = await OffersCollection.updateOne(query, newData, options)
+            res.send(result)
 
+        })
+
+        //PAYMENT INTENT 
+
+        app.post('/create-payment-intent',async(req,res)=>{
+            const {price} = req.body;
+            const  amount = parseInt(price*100);
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency : 'usd',
+                payment_method_types: ['card']
+            })
+            res.send({
+                clientSecret : paymentIntent.client_secret
+            })
+        })
 
 
         // Send a ping to confirm a successful connection
@@ -267,3 +362,5 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log(`Real State server is running on server ${port}`);
 })
+
+// sheikhasinarsalamnin@23

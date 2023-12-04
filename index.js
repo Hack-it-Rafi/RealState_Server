@@ -259,9 +259,9 @@ async function run() {
             res.send(result);
         })
         app.get("/wishList", logger, async (req, res) => {
-            const ownerEmail = req.query.email;
+            const buyerMail = req.query.email;
             // console.log(jobCat);
-            const query = { ownerEmail: ownerEmail };
+            const query = { buyerMail: buyerMail };
             console.log("afa", query);
             const options = {
                 sort: { job_title: 1 },
@@ -297,6 +297,18 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        app.get("/myOfferedProp", logger, async (req, res) => {
+            const ownerEmail = req.query.email;
+            // console.log(jobCat);
+            const query = { ownerEmail: ownerEmail };
+            // console.log("afa",query);
+            const options = {
+                sort: { job_title: 1 },
+            };
+            const cursor = OffersCollection.find(query, options);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
         app.get("/offeredProp/:id", logger, async (req, res) => {
             const id = req.params.id;
             // console.log(jobCat);
@@ -322,7 +334,7 @@ async function run() {
                     status:updatedData.status,
                     location: updatedData.location,
                     buyerName: updatedData.buyerName,
-                    buyerEmail: updatedData.buyerEmail,
+                    buyerMail: updatedData.buyerMail,
                     date: updatedData.date,
                     amount: updatedData.amount
                 }
